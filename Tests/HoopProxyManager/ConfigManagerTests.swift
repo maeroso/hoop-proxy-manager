@@ -1,12 +1,5 @@
-//
-//  ConfigManagerTests.swift
-//  
-//
-//  Created by Matheus Aeroso on 16/09/2024.
-//
-
 import XCTest
-@testable import HoopProxyManager
+@testable import HoopProxyManagerCore
 
 final class ConfigManagerTests: XCTestCase {
     func testCheckHoop() async throws {

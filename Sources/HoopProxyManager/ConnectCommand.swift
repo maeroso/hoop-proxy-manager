@@ -1,5 +1,6 @@
 import Foundation
 import ArgumentParser
+import HoopProxyManagerCore
 
 #if os(macOS)
 import Darwin

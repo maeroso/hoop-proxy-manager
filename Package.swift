@@ -12,14 +12,13 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.2.0"),
         .package(url: "https://github.com/LebJe/TOMLKit.git", from: "0.5.0"),
         .package(url: "https://github.com/vapor/jwt-kit.git", from: "5.0.0-beta.rc"),
+        .package(url: "https://github.com/vapor/vapor.git", from: "4.89.0"),
     ],
     targets: [
-        // Targets are the basic building blocks of a package, defining a module or a test suite.
-        // Targets can depend on other targets in this package and products from dependencies.
-        .executableTarget(
-            name: "HoopProxyManager",
+        // Shared business logic library
+        .target(
+            name: "HoopProxyManagerCore",
             dependencies: [
-                .product(name: "ArgumentParser", package: "swift-argument-parser"),
                 .product(name: "TOMLKit", package: "TOMLKit"),
                 .product(name: "JWTKit", package: "jwt-kit"),
             ],
@@ -28,6 +27,30 @@ let package = Package(
                 .unsafeFlags(["-Osize"], .when(configuration: .release)),
             ]
         ),
-        .testTarget(name: "HoopProxyManagerTests", dependencies: ["HoopProxyManager"]),
+        // CLI executable target
+        .executableTarget(
+            name: "HoopProxyManager",
+            dependencies: [
+                "HoopProxyManagerCore",
+                .product(name: "ArgumentParser", package: "swift-argument-parser"),
+            ],
+            swiftSettings: [
+                .unsafeFlags(["-cross-module-optimization"], .when(configuration: .release)),
+                .unsafeFlags(["-Osize"], .when(configuration: .release)),
+            ]
+        ),
+        // Web UI executable target
+        .executableTarget(
+            name: "HoopProxyManagerWeb",
+            dependencies: [
+                "HoopProxyManagerCore",
+                .product(name: "Vapor", package: "vapor"),
+            ],
+            swiftSettings: [
+                .unsafeFlags(["-cross-module-optimization"], .when(configuration: .release)),
+                .unsafeFlags(["-Osize"], .when(configuration: .release)),
+            ]
+        ),
+        .testTarget(name: "HoopProxyManagerTests", dependencies: ["HoopProxyManagerCore"]),
     ]
 )
